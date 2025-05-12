@@ -1,1 +1,0 @@
-print('docker executado corretamente')
