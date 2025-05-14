@@ -4,7 +4,6 @@ def view_admin(cursor):
   SELECT 
       v.id AS id_venda,     
       f.nome AS nome_funcionario,
-      c.nome AS nome_cliente,
       p.nome AS produto,
       p.valor,
       v.data
@@ -14,6 +13,7 @@ def view_admin(cursor):
       JOIN produto p ON v.id = p.id
 
   """)
+  cursor.execute("GRANT ALL PRIVILEGES ON empresa.* TO 'admin_user'@'localhost';")
 
 def view_gerente(cursor):
   cursor.execute("DROP VIEW IF EXISTS gerente_view")
@@ -42,3 +42,8 @@ def view_func(cursor):
       v.data
       FROM venda v         
   """)
+
+
+
+
+  cursor.execute("FLUSH PRIVILEGES;")
