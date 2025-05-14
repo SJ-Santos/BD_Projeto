@@ -226,8 +226,11 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 id_vendedor INT,
 id_cliente INT,
 data DATE,
+venda FLOAT,
+id_produto INT,
 FOREIGN KEY(id_vendedor) REFERENCES funcionario(id),
-FOREIGN KEY(id_cliente) REFERENCES cliente(id)
+FOREIGN KEY(id_cliente) REFERENCES cliente(id),
+FOREIGN KEY(id_produto) REFERENCES produto(id)
 );
                    
 CREATE TABLE funcionario_especial(
