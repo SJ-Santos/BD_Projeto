@@ -226,8 +226,21 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 id_vendedor INT,
 id_cliente INT,
 data DATE,
+venda FLOAT,
+id_produto INT,
 FOREIGN KEY(id_vendedor) REFERENCES funcionario(id),
-FOREIGN KEY(id_cliente) REFERENCES cliente(id)
+FOREIGN KEY(id_cliente) REFERENCES cliente(id),
+FOREIGN KEY(id_produto) REFERENCES produto(id)
+);
+                   
+CREATE TABLE funcionario_especial(
+id INT AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR(100),
+idade INT,
+sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
+cargo VARCHAR(10) CHECK (cargo IN ('vendedor','gerente','CEO')),
+salario DECIMAL(10,2),
+nascimento DATE                 
 );
         """)
 
