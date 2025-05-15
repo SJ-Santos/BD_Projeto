@@ -58,7 +58,7 @@ if (usuario == Administrador["username"] and senha == Administrador["password"] 
         print(f"nome={nome}, quantidade={qtd}, descricao={descricao}, valor={valor}")
 
         try:
-            insert_produto(cursor, nome, qtd, descricao, valor)
+            insert_produto(cursor, nome, qtd, descricao, valor)#esta dando erro interno do mysql
             connector.commit()
             print("Produto inserido com sucesso!")
         except Exception as e:
@@ -87,7 +87,7 @@ elif (usuario== Gerente["username"] and senha == Gerente["password"] ):
         descricao = input("descrição do produto")
         valor = float(input("valor do produto"))
         insert_produto(cursor,nome,qtd,descricao,valor)
-        cursor.commit()
+        connector.commit()
 
 elif(usuario== Funcionario["username"] and senha == Funcionario["password"] ):
     create_user(cursor,Funcionario)#cria user funcionario
