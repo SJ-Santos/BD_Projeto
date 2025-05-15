@@ -10,8 +10,6 @@ def view_prod_mais_vendidos(cursor):
       ORDER BY total_vendido DESC;
   """)
 
-  cursor.execute("GRANT ALL PRIVILEGES ON empresa.* TO 'admin_user'@'localhost';")
-
 def view_resumo_vendas(cursor):
   cursor.execute("DROP VIEW IF EXISTS resumo_vendas_funcionario")
   cursor.execute("""CREATE VIEW resumo_vendas_funcionario AS
@@ -40,6 +38,20 @@ def view_func_por_venda(cursor):
   """)
 
 
+def grant_admin(cursor):
+   cursor.execute("""
+    GRANT ALL PRIVILEGES ON empresa.* TO 'Administrador'@'localhost';
+    FLUSH PRIVILEGES;
+    """)
 
+def grant_func(cursor):
+   cursor.execute("""
+   GRANT SELECT, INSERT ON nome_da_database.venda TO 'funcionario'@'localhost';
+   FLUSH PRIVILEGES;
+   """)
 
-  cursor.execute("FLUSH PRIVILEGES;")
+def grant_gerente(cursor):
+   cursor.execute("""
+   GRANT SELECT,UPDATE,DELETE ON empresa.* TO 'Gerente'@'localhost';
+   FLUSH PRIVILEGES;
+  """)
