@@ -1,29 +1,9 @@
-def users(i):
-    if i == 0:
-     user =  Administrador = {
-        "username":"Administrador",
-        "host":"localhost",
-        "password" : "Adm123"
-      }
-    elif i ==1:
-     user =  Gerente = {
-        "username" : "Gerente",
-        "host":"localhost",
-        "password":"Ger123"
-       }
-    elif i==2:
-      user =  Funcionario = {
-        "username":"Funcionario",
-        "host":"localhost",
-        "password":"Fun123"
-        }
-    return user
 
 
 def create_user(cursor, user):
+    cursor.execute(f"DROP USER IF EXISTS '{user['username']}'@'{user['host']}';")
     cursor.execute(
-        "CREATE USER %s@%s IDENTIFIED BY %s;",
-        (user['username'], user['host'], user['password'])
+       f"CREATE USER '{user['username']}'@'{user['host']}' IDENTIFIED BY '{user['password']}';"
     )
 
 def insert_produto(cursor, nome: str, quantidade: int, descricao: str, valor: float):
@@ -177,70 +157,80 @@ def inserts(cursor):
 
 def drop_database(cursor):
     cursor.execute("""
-    DROP DATABASE empresa;
+    DROP DATABASE IF EXISTS empresa;
 
     """)
 
 def create_database(cursor):
+    cursor.execute("CREATE DATABASE IF NOT EXISTS empresa;")
+    cursor.execute("USE empresa;")  # necessário para criar tabelas na database correta
+
     cursor.execute("""
-CREATE DATABASE empresa;
+    CREATE TABLE IF NOT EXISTS cliente (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100),
+        sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
+        idade INT,
+        nascimento DATE
+    );
+    """)
 
-CREATE TABLE cliente(
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(100),
-sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
-idade INT,
-nascimento DATE
-);
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS cliente_especial (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100),
+        sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
+        idade INT,
+        id_cliente INT,
+        cashback INT,
+        FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+    );
+    """)
 
-CREATE TABLE clienteespecial (
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(100),
-sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
-idade INT,
-id_cliente INT,
-cashback INT,
-FOREIGN KEY (id_cliente) REFERENCES cliente(id)
-);
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS funcionario (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100),
+        idade INT,
+        sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
+        cargo VARCHAR(10) CHECK (cargo IN ('vendedor','gerente','CEO')),
+        salario DECIMAL(10,2),
+        nascimento DATE
+    );
+    """)
 
-CREATE TABLE  funcionario(
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(100),
-idade INT,
-sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
-cargo VARCHAR(10) CHECK (cargo IN ('vendedor','gerente','CEO')),
-salario DECIMAL(10,2),
-nascimento DATE
-);
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS produto (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100),
+        quantidade INT,
+        descricao VARCHAR(255),
+        valor DECIMAL(10,2)
+    );
+    """)
 
-CREATE TABLE produto(
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(100),
-quantidade INT,
-descricao VARCHAR(),
-valor DECIMAL(10,2)
-);
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS venda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        id_vendedor INT,
+        id_cliente INT,
+        data DATE,
+        venda FLOAT,
+        id_produto INT,
+        FOREIGN KEY(id_vendedor) REFERENCES funcionario(id),
+        FOREIGN KEY(id_cliente) REFERENCES cliente(id),
+        FOREIGN KEY(id_produto) REFERENCES produto(id)
+    );
+    """)
 
-CREATE TABLE venda(
-id INT AUTO_INCREMENT PRIMARY KEY,
-id_vendedor INT,
-id_cliente INT,
-data DATE,
-venda FLOAT,
-id_produto INT,
-FOREIGN KEY(id_vendedor) REFERENCES funcionario(id),
-FOREIGN KEY(id_cliente) REFERENCES cliente(id),
-FOREIGN KEY(id_produto) REFERENCES produto(id)
-);
-                   
-CREATE TABLE funcionario_especial(
-id INT AUTO_INCREMENT PRIMARY KEY,
-nome VARCHAR(100),
-idade INT,
-sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
-cargo VARCHAR(10) CHECK (cargo IN ('vendedor','gerente','CEO')),
-salario DECIMAL(10,2),
-nascimento DATE                 
-);
-        """)
-
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS funcionario_especial (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100),
+        idade INT,
+        sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O')),
+        cargo VARCHAR(10) CHECK (cargo IN ('vendedor','gerente','CEO')),
+        salario DECIMAL(10,2),
+        nascimento DATE
+    );
+    """)

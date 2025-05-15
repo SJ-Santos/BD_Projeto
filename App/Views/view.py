@@ -1,14 +1,15 @@
 def view_prod_mais_vendidos(cursor):
-  cursor.execute("DROP VIEW IF EXISTS produtos_mais_vendidos")
-  cursor.execute("""CREATE VIEW produtos_mais_vendidos AS
-  SELECT 
-      p.nome AS produto,
-      COUNT(v.id) AS total_vendido
-      FROM produto p
-      JOIN venda v ON p.id = v.id_produto
-      GROUP BY p.id, p.nome
-      ORDER BY total_vendido DESC;
-  """)
+    cursor.execute("DROP VIEW IF EXISTS produtos_mais_vendidos")
+    cursor.execute("""
+    CREATE VIEW produtos_mais_vendidos AS
+    SELECT 
+        p.nome AS produto,
+        COUNT(v.id) AS total_vendido
+    FROM produto p
+    JOIN venda v ON p.id = v.id_produto
+    GROUP BY p.id, p.nome
+    """)
+
 
 def view_resumo_vendas(cursor):
   cursor.execute("DROP VIEW IF EXISTS resumo_vendas_funcionario")
@@ -29,11 +30,11 @@ def view_func_por_venda(cursor):
       f.nome AS funcionario,
        c.nome AS cliente,
        v.data,
-       v.valor
+       v.venda
        FROM venda v
        JOIN funcionario f ON v.id_vendedor = f.id
        JOIN cliente c ON v.id_cliente = c.id
-       ORDER BY v.data, v.valor DESC;
+       ORDER BY v.data, v.venda DESC;
       
   """)
 
